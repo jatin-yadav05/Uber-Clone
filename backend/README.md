@@ -210,4 +210,121 @@ curl -X POST http://your-api-url/api/users/login \
     "email": "john.doe@example.com",
     "password": "securepassword123"
   }'
-``` 
+```
+
+## Get User Profile Endpoint
+
+Retrieve the profile information of the authenticated user.
+
+### Endpoint
+
+```
+GET /api/users/profile
+```
+
+### Authentication
+
+- Requires a valid JWT token in the request header or cookie
+- Format: `Authorization: Bearer <token>` or Cookie: `token=<token>`
+
+### Responses
+
+#### Success Response
+
+- **Status Code**: 200 (OK)
+- **Content**:
+```json
+{
+  "fullName": {
+    "firstName": "string",
+    "lastName": "string"
+  },
+  "email": "string",
+  "createdAt": "timestamp"
+}
+```
+
+#### Error Responses
+
+1. **Unauthorized Access**
+   - **Status Code**: 401
+   - **Content**:
+   ```json
+   {
+     "error": "Please authenticate"
+   }
+   ```
+
+2. **Server Error**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "error": "Error message"
+   }
+   ```
+
+### Example Request
+
+```bash
+curl -X GET http://your-api-url/api/users/profile \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## Logout User Endpoint
+
+Logout the currently authenticated user and invalidate their token.
+
+### Endpoint
+
+```
+GET /api/users/logout
+```
+
+### Authentication
+
+- Requires a valid JWT token in the request header or cookie
+- Format: `Authorization: Bearer <token>` or Cookie: `token=<token>`
+
+### Description
+
+- Clears the authentication token cookie
+- Blacklists the current token to prevent reuse
+- Logs out the user from the current session
+
+### Responses
+
+#### Success Response
+
+- **Status Code**: 200 (OK)
+- **Content**:
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+#### Error Responses
+
+1. **Server Error**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "error": "Error message"
+   }
+   ```
+
+### Example Request
+
+```bash
+curl -X GET http://your-api-url/api/users/logout \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  --cookie "token=YOUR_JWT_TOKEN"
+```
+
+### Notes
+
+- The endpoint will clear the authentication cookie from the client
+- The token will be added to a blacklist to prevent reuse
+- Subsequent requests with the same token will be rejected 
