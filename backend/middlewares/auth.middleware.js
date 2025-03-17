@@ -1,6 +1,7 @@
 const userModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const blackListTokenModel = require('../models/blackListToken.model');
 dotenv.config();
 
 module.exports.authUser = async (req, res, next) => {
