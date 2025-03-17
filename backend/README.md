@@ -114,4 +114,100 @@ curl -X POST http://your-api-url/api/users/register \
     "email": "john.doe@example.com",
     "password": "securepassword123"
   }'
+```
+
+## Login User Endpoint
+
+Authenticate an existing user and receive an access token.
+
+### Endpoint
+
+```
+POST /api/users/login
+```
+
+### Request Body
+
+```json
+{
+  "email": "string",    // Required, valid email format
+  "password": "string"  // Required, minimum 6 characters
+}
+```
+
+### Validation Rules
+
+- **email**:
+  - Required
+  - Must be a valid email format
+  - Case insensitive
+
+- **password**:
+  - Required
+  - Minimum length: 6 characters
+
+### Responses
+
+#### Success Response
+
+- **Status Code**: 200 (OK)
+- **Content**:
+```json
+{
+  "user": {
+    "fullName": {
+      "firstName": "string",
+      "lastName": "string"
+    },
+    "email": "string",
+    "createdAt": "timestamp"
+  },
+  "token": "JWT_Token_String"
+}
+```
+
+#### Error Responses
+
+1. **Invalid Input**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "errors": [
+       {
+         "msg": "Error message",
+         "param": "field_name",
+         "location": "body"
+       }
+     ]
+   }
+   ```
+
+2. **Invalid Credentials**
+   - **Status Code**: 401
+   - **Content**:
+   ```json
+   {
+     "error": "Invalid email or password"
+   }
+   ```
+
+3. **Server Error**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "error": "Error message"
+   }
+   ```
+
+### Example Request
+
+```bash
+curl -X POST http://your-api-url/api/users/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john.doe@example.com",
+    "password": "securepassword123"
+  }'
 ``` 
