@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists with this email' });
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await userModel.hashPassword(password);
         console.log(firstName, lastName, email, password);
         const user = await userService.createUser({ firstName, lastName, email, password: hashedPassword });
         const token = user.generateAuthToken();

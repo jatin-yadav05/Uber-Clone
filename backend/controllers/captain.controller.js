@@ -15,7 +15,6 @@ module.exports.registerCaptain = async (req, res) => {
         }
         const { firstName, lastName } = fullName;
         const { color, capacity, vehicleType, plate } = vehicle;
-        console.log(firstName, lastName, color, capacity, vehicleType, plate);
         const hashedPassword = await captainModel.hashPassword(password);
         const captain = await captainService.createCaptain({ email, password: hashedPassword, firstName, lastName, color, capacity, vehicleType, plate });
         const token = captain.generateAuthToken();
