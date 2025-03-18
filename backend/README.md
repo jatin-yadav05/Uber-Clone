@@ -462,4 +462,228 @@ curl -X POST http://your-api-url/api/captains/register \
       "plate": "ABC123"
     }
   }'
-``` 
+```
+
+## Login Captain Endpoint
+
+Authenticate an existing captain and receive an access token.
+
+### Endpoint
+
+```
+POST /api/captains/login
+```
+
+### Request Body
+
+```json
+{
+  "email": "string",    // Required, valid email format
+  "password": "string"  // Required
+}
+```
+
+### Validation Rules
+
+- **email**:
+  - Required
+  - Must be a valid email format
+  - Case insensitive
+
+- **password**:
+  - Required
+
+### Responses
+
+#### Success Response
+
+- **Status Code**: 200 (OK)
+- **Content**:
+```json
+{
+  "captain": {
+    "fullName": {
+      "firstName": "string",
+      "lastName": "string"
+    },
+    "email": "string",
+    "vehicle": {
+      "color": "string",
+      "capacity": "number",
+      "vehicleType": "string",
+      "plate": "string"
+    },
+    "createdAt": "timestamp"
+  },
+  "token": "JWT_Token_String"
+}
+```
+
+#### Error Responses
+
+1. **Invalid Input**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "errors": [
+       {
+         "msg": "Error message",
+         "param": "field_name",
+         "location": "body"
+       }
+     ]
+   }
+   ```
+
+2. **Invalid Credentials**
+   - **Status Code**: 401
+   - **Content**:
+   ```json
+   {
+     "error": "Invalid email or password"
+   }
+   ```
+
+3. **Server Error**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "error": "Error message"
+   }
+   ```
+
+### Example Request
+
+```bash
+curl -X POST http://your-api-url/api/captains/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john.driver@example.com",
+    "password": "securepassword123"
+  }'
+```
+
+## Get Captain Profile Endpoint
+
+Retrieve the profile information of the authenticated captain.
+
+### Endpoint
+
+```
+GET /api/captains/profile
+```
+
+### Authentication
+
+- Requires a valid JWT token in the request header or cookie
+- Format: `Authorization: Bearer <token>` or Cookie: `token=<token>`
+
+### Responses
+
+#### Success Response
+
+- **Status Code**: 200 (OK)
+- **Content**:
+```json
+{
+  "fullName": {
+    "firstName": "string",
+    "lastName": "string"
+  },
+  "email": "string",
+  "vehicle": {
+    "color": "string",
+    "capacity": "number",
+    "vehicleType": "string",
+    "plate": "string"
+  },
+  "createdAt": "timestamp"
+}
+```
+
+#### Error Responses
+
+1. **Unauthorized Access**
+   - **Status Code**: 401
+   - **Content**:
+   ```json
+   {
+     "error": "Please authenticate"
+   }
+   ```
+
+2. **Server Error**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "error": "Error message"
+   }
+   ```
+
+### Example Request
+
+```bash
+curl -X GET http://your-api-url/api/captains/profile \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## Logout Captain Endpoint
+
+Logout the currently authenticated captain and invalidate their token.
+
+### Endpoint
+
+```
+GET /api/captains/logout
+```
+
+### Authentication
+
+- Requires a valid JWT token in the request header or cookie
+- Format: `Authorization: Bearer <token>` or Cookie: `token=<token>`
+
+### Description
+
+- Clears the authentication token cookie
+- Blacklists the current token to prevent reuse
+- Logs out the captain from the current session
+
+### Responses
+
+#### Success Response
+
+- **Status Code**: 200 (OK)
+- **Content**:
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+#### Error Responses
+
+1. **Server Error**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "error": "Error message"
+   }
+   ```
+
+### Example Request
+
+```bash
+curl -X GET http://your-api-url/api/captains/logout \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  --cookie "token=YOUR_JWT_TOKEN"
+```
+
+### Notes
+
+- The endpoint will clear the authentication cookie from the client
+- The token will be added to a blacklist to prevent reuse
+- Subsequent requests with the same token will be rejected 
