@@ -328,3 +328,138 @@ curl -X GET http://your-api-url/api/users/logout \
 - The endpoint will clear the authentication cookie from the client
 - The token will be added to a blacklist to prevent reuse
 - Subsequent requests with the same token will be rejected 
+
+# Captain API Documentation
+
+## Register Captain Endpoint
+
+Register a new captain (driver) in the system.
+
+### Endpoint
+
+```
+POST /api/captains/register
+```
+
+### Request Body
+
+```json
+{
+  "fullName": {
+    "firstName": "string",    // Required
+    "lastName": "string"
+  },
+  "email": "string",         // Required, valid email format
+  "password": "string",      // Required
+  "vehicle": {
+    "color": "string",       // Required, vehicle color
+    "capacity": "number",    // Required, vehicle passenger capacity
+    "vehicleType": "string", // Required, type of vehicle
+    "plate": "string"        // Required, vehicle plate number
+  }
+}
+```
+
+### Validation Rules
+
+- **fullName**:
+  - firstName and lastName are required
+  - Must be valid string values
+
+- **email**:
+  - Required
+  - Must be a valid email format
+  - Must be unique in the system
+  - Will be stored in lowercase
+
+- **password**:
+  - Required
+  - Will be hashed before storage
+
+- **vehicle**:
+  - color: Required, vehicle color
+  - capacity: Required, number of passengers the vehicle can accommodate
+  - vehicleType: Required, type of vehicle (e.g., "car", "van")
+  - plate: Required, vehicle registration plate number
+
+### Responses
+
+#### Success Response
+
+- **Status Code**: 201 (Created)
+- **Content**:
+```json
+{
+  "captain": {
+    "fullName": {
+      "firstName": "string",
+      "lastName": "string"
+    },
+    "email": "string",
+    "vehicle": {
+      "color": "string",
+      "capacity": "number",
+      "vehicleType": "string",
+      "plate": "string"
+    },
+    "createdAt": "timestamp"
+  },
+  "token": "JWT_Token_String"
+}
+```
+
+#### Error Responses
+
+1. **Invalid Input**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "errors": [
+       {
+         "msg": "Error message",
+         "param": "field_name",
+         "location": "body"
+       }
+     ]
+   }
+   ```
+
+2. **Email Already Exists**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "error": "Email already exists"
+   }
+   ```
+
+3. **Server Error**
+   - **Status Code**: 400
+   - **Content**:
+   ```json
+   {
+     "error": "Error message"
+   }
+   ```
+
+### Example Request
+
+```bash
+curl -X POST http://your-api-url/api/captains/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullName": {
+      "firstName": "John",
+      "lastName": "Driver"
+    },
+    "email": "john.driver@example.com",
+    "password": "securepassword123",
+    "vehicle": {
+      "color": "Black",
+      "capacity": 4,
+      "vehicleType": "Sedan",
+      "plate": "ABC123"
+    }
+  }'
+``` 
